@@ -12,6 +12,8 @@ let current = `${year}-${month}`
 
 const token = authService.getUser()
 
+
+
 export class ProductsService {
     async getFinance(tk) {
         const res = await fetch(`${API_URL}/api/finance/${current}`, {
@@ -24,10 +26,6 @@ export class ProductsService {
     }
     async getFinanceByTerm(term) {
         const token = authService.getUser()
-        if (token === null) {
-            navigate("/login");
-        }
-
         const res = await fetch(`${API_URL}/api/finance/${term}`, {
             headers: {
                 "Content-Type": "application/json",
