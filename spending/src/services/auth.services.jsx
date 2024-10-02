@@ -26,7 +26,7 @@ export class AuthService {
     }
     async signup(email,password) {
         let data = JSON.stringify({email:email,password:password})
-        const response = await fetch(`${API_URL}/api/signup`, {
+        const response = await fetch(`${API_URL}/api/auth/signup`, {
             method: "POST",
             body: data,
             headers: {
