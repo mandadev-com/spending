@@ -86,7 +86,7 @@ export class ProductsService {
 
     }
     async account(tk) {
-        return await fetch(`${API_URL}/api/account`, {
+        return await fetch(`${API_URL}/api/auth/account`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

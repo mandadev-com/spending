@@ -167,9 +167,9 @@ const Home = () => {
           </div>
           <div className="mb-[10rem]">
             <div>
-              <div className={`flex justify-between ${data.total > 0 ? 'text-positive' : 'text-negative'}`}>
+              <div className={`flex justify-between ${data.data.total > 0 ? 'text-positive' : 'text-negative'}`}>
                 <h1 className={`${styles.headText} `}>Balance</h1>
-                <h1 className={` ${styles.headText} `}>{data.total}</h1>
+                <h1 className={` ${styles.headText} `}>{data.data.total}</h1>
               </div>
             </div>
             <div className="flex justify-between">

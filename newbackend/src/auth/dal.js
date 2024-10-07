@@ -66,8 +66,26 @@ function validateToken(token) {
   }
 }
 
+// Get user
+async function getUserById(userId) {
+  try {
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      console.log(`User with ID ${userId} not found.`);
+      return null;
+    }
+
+    console.log("User details in getUserById:", user);
+    return user;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   authenticateUser,
   createUser,
   validateToken,
+  getUserById,
 };

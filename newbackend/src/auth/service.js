@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { authenticateUser, createUser } = require("./dal");
+const {
+  authenticateUser,
+  createUser,
+  validateToken,
+  getUserById,
+} = require("./dal");
 
 router.post("/login", async (req, res) => {
   console.log("Login request received:", req.body);
@@ -28,6 +33,33 @@ router.post("/signup", async (req, res) => {
   } catch (error) {
     console.error("Error creating user:", error.message);
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Adjusted route to get account details
+router.get("/account", async (req, res) => {
+  console.log(`/api/auth/account`);
+  const token = req.headers.authorization;
+  console.log(`token : `, token);
+
+  try {
+    const user_id = validateToken(token);
+    console.log(`user_id : `, user_id);
+    const user = await getUserById(user_id); // Make sure you have this function defined to fetch user
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return user details
+    res.json({
+      user_id: user._id,
+      email: user.email,
+    });
+
+    console.log("Success fetching user:", user);
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

@@ -103,7 +103,8 @@ const Account = () => {
           </div>
           <div>
             <p className="text-[20px] text-white ubuntu">Recurring items:</p>
-            {data.items.map((item, index) => (
+            {console.log("data : ", data)}
+            {/* {data.items.map((item, index) => (
               <div key={index} className="flex justify-between group">
                 <div className="flex items-center">
                   <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
@@ -115,7 +116,7 @@ const Account = () => {
                 </div>
                 <h1 className={`mr-6 font-semibold text-[20px] font-semibold ubuntu ${item.direction === 'income' ? 'text-positive' : 'text-negative'}`}>{item.amount}</h1>
               </div>
-            ))}
+            ))} */}
           </div>
           <div className="flex justify-between">
             <button className="w-[40%] bg-positive text-white ubuntu rounded-[8px] h-[48px] sans" onClick={switchIncome}>Add Income</button>
