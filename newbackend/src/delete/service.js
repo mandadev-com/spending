@@ -1,18 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const { deleteItem } = require("./dal.js");
-const { validateToken } = require("../auth/dal.js");
+const { authorisedRoute } = require("../auth/dal.js");
 
 console.log("API routes mounted at /api/delete");
 // Delete an item (DELETE)
-router.delete("/:itemId", async (req, res) => {
+router.delete("/:itemId", authorisedRoute, async (req, res) => {
   const { itemId } = req.params;
-  const token = req.headers["authorization"]; // Get the token from the headers
+  const user_id = req.user;
+  console.log("Delete - user_id : ", user_id);
+
 
   try {
-    console.log("Token : ", token);
-    const user_id = validateToken(token); // Validate the token and get user_id
-    console.log("user_id : ", user_id);
     const result = await deleteItem(user_id, itemId);
 
     if (result) {

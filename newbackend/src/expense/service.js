@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { addExpense, getExpenses } = require("./dal.js");
-const { validateToken } = require("../auth/dal.js");
+const { authorisedRoute } = require("../auth/dal.js");
 
 // Add an expense (POST)
 console.log("API routes mounted at /api/expense");
-router.post("/add", async (req, res) => {
+router.post("/add", authorisedRoute, async (req, res) => {
   const { name, amount, term, occurrence } = req.body;
-  const token = req.headers["authorization"]; // Get the token from the headers
+  const user_id = req.user;
+  console.log("Expense - user_id : ", user_id);
 
   // Validate required fields
   if (!name || !amount || !term || !occurrence) {
@@ -16,15 +17,7 @@ router.post("/add", async (req, res) => {
     });
   }
 
-  // Validate authorization header
-  if (!req.headers["authorization"]) {
-    return res.status(401).json({ error: "Authorization is required" });
-  }
-
   try {
-    console.log("Token : ", token);
-    const user_id = validateToken(token); // Validate the token and get user_id
-    console.log("user_id : ", user_id);
     await addExpense(user_id, name, amount, term, occurrence);
     res.status(201).json({ status: true });
   } catch (error) {

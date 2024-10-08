@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { getRecurringItems, getTermItems } = require("./dal.js");
 const moment = require("moment");
-const { validateToken } = require("../auth/dal.js");
+const { authorisedRoute } = require("../auth/dal.js");
 
 console.log("API routes mounted at /api/finance");
-router.get("/:term", async (req, res) => {
+router.get("/:term", authorisedRoute, async (req, res) => {
   let term = req.params.term;
+  const user_id = req.user;
 
-  const token = req.headers["authorization"]; // Get the token from the headers
+  console.log("Finance - user_id : ", user_id);
 
   if (term === "current") {
     term = moment().format("YYYY-MM");
@@ -22,9 +23,6 @@ router.get("/:term", async (req, res) => {
   }
 
   try {
-    console.log("Token : ", token);
-    const user_id = validateToken(token); // Validate the token and get user_id
-    console.log("user_id : ", user_id);
     if (!user_id) {
       return res.status(401).json({
         status: false,
