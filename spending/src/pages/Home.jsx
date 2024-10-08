@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 const Home = () => {
   const navigate = useNavigate();
   const token = authService.getUser()
-  console.log(token, "getUser")
   if (token === null) {
     navigate("/login");
   }
@@ -27,13 +26,12 @@ const Home = () => {
   const [term, setTerm] = useState(currentMonth)
   function refetch() {
     console.log("refetech")
-    productsService.getFinanceByTerm(term).then(function(response) {
+    productsService.getFinanceByTerm(term).then(function (response) {
       setData(response)
-      console.log(response.status)
       if (response.status === true) {
         console.log("set")
         setStat('success')
-      } else if (response.error === "invalid token") {
+      } else if (response.status === false) {
         navigate("/login");
       }
 
@@ -53,9 +51,9 @@ const Home = () => {
     const expense_occurrence = document.getElementById("occurrence").value
     var newTerm = term
     if (expense_occurrence === "recurring") {
-      newTerm = null
+      newTerm = "recurring"
     }
-    productsService.postExpense(expense_name, expense_amount, expense_occurrence, newTerm).then(function() {
+    productsService.postExpense(expense_name, expense_amount, expense_occurrence, newTerm).then(function () {
       refetch()
     })
   }
@@ -66,9 +64,9 @@ const Home = () => {
     const income_occurrence = document.getElementById("IncomeOccurrence").value
     var newTerm = term
     if (income_occurrence === "recurring") {
-      newTerm = null
+      newTerm = "recurring"
     }
-    productsService.postIncome(income_name, income_amount, income_occurrence, newTerm).then(function() {
+    productsService.postIncome(income_name, income_amount, income_occurrence, newTerm).then(function () {
       refetch()
     })
   }
@@ -89,7 +87,7 @@ const Home = () => {
     }
   }
   const remove = (index) => {
-    productsService.remove(index).then(function() {
+    productsService.remove(index).then(function () {
       refetch()
     })
 
@@ -117,7 +115,7 @@ const Home = () => {
             </a>
           </div>
           <div>
-            <select value={term} onChange={(e)=>{setTerm(e.target.value)}}>
+            <select value={term} onChange={(e) => { setTerm(e.target.value) }}>
               <option value={prevMonth}>past</option>
               <option value={currentMonth}>current</option>
               <option value={nextMonth}>upcoming</option>
@@ -127,16 +125,18 @@ const Home = () => {
             <div className="flex justify-between p-8">
               <div>
                 <h1 className={`text-positive ${styles.headText}`}>Income:</h1>
-                <h1 className={`text-positive ${styles.headText}`}>{data.total_income}</h1></div>
+                <h1 className={`text-positive ${styles.headText}`}>{data.data.total_income}</h1></div>
               <div>
                 <h1 className={`text-negative ${styles.headText}`}>Expenses:</h1>
-                <h1 className={`text-negative ${styles.headText}`}>{data.total_expenses}</h1></div>
+                <h1 className={`text-negative ${styles.headText}`}>{data.data.total_expenses}</h1></div>
             </div>
             <div>
-              {data.income.sort((a, b) => a.amount < b.amount ? 1 : -1).map((item, index) => (
+              {console.log("data.data.income : ", data.data.income)}
+              {Array.isArray(data.data.income) && data.data.income.sort((a, b) => a.amount < b.amount ? 1 : -1).map((item, index) => (
                 <div key={index} className="flex justify-between group">
                   <div className="flex items-center">
                     <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
+                    {console.log("item : ", item)}
                     {item.occurrence === 'recurring' && (
                       <img src={item.direction === 'income' ? positive_recurring : negative_recurring} alt="recurring" className="w-[22px] h-[22px] ml-2" />
                     )}
@@ -146,7 +146,7 @@ const Home = () => {
                   <h1 className={`mr-6 font-semibold text-[20px] ubuntu ${item.direction === 'income' ? 'text-positive' : 'text-negative'}`}>{item.amount}</h1>
                 </div>
               ))}
-              {data.expenses.sort((a, b) => a.amount < b.amount ? 1 : -1).map((item, index) => (
+              {Array.isArray(data.data.expenses) && data.data.expenses.sort((a, b) => a.amount < b.amount ? 1 : -1).map((item, index) => (
                 <div key={index} className="flex justify-between group">
                   <div className="flex items-center">
                     <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
@@ -169,9 +169,9 @@ const Home = () => {
           </div>
           <div className="mb-[10rem]">
             <div>
-              <div className={`flex justify-between ${data.total > 0 ? 'text-positive' : 'text-negative'}`}>
+              <div className={`flex justify-between ${data.data.total > 0 ? 'text-positive' : 'text-negative'}`}>
                 <h1 className={`${styles.headText} `}>Balance</h1>
-                <h1 className={` ${styles.headText} `}>{data.total}</h1>
+                <h1 className={` ${styles.headText} `}>{data.data.total}</h1>
               </div>
             </div>
             <div className="flex justify-between">

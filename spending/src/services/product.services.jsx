@@ -32,7 +32,19 @@ export class ProductsService {
                 "Authorization": token
             }
         });
-        return res.json();
+        const data = await res.json();
+        if (data.error) {
+            console.log("data.error")
+            return {
+                status: false,
+                error: data.error
+            };
+        }
+
+        return {
+            status: true,
+            data: data
+        };
     }
     async postExpense(name, amount, occurrence, term) {
         if (term === "current") {
@@ -53,6 +65,7 @@ export class ProductsService {
             term = current
         }
         let data = JSON.stringify({ "name": name, 'amount': amount, "term": term, 'occurrence': occurrence })
+        console.log("Data for postIncome :", data)
         return await fetch(`${API_URL}/api/income/add`, {
             method: "POST",
             body: data,
@@ -63,7 +76,7 @@ export class ProductsService {
         }).then(res => res.json());
     }
     async remove(id) {
-        return await fetch(`${API_URL}/api/item/${id}`, {
+        return await fetch(`${API_URL}/api/delete/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -73,7 +86,7 @@ export class ProductsService {
 
     }
     async account(tk) {
-        return await fetch(`${API_URL}/api/account`, {
+        return await fetch(`${API_URL}/api/auth/account`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
