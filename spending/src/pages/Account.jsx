@@ -13,14 +13,35 @@ const Account = () => {
     console.log("redi")
     navigate('/login')
   }
+
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+
+  const formatMonth = (month) => (`0${month}`).slice(-2);
+
+  const currentMonth = `${year}-${formatMonth(month)}`;
+  const prevMonth = `${month === 1 ? year - 1 : year}-${formatMonth(month === 1 ? 12 : month - 1)}`;
+  const nextMonth = `${month === 12 ? year + 1 : year}-${formatMonth(month === 12 ? 1 : month + 1)}`;
+
   const [status, setStat] = useState("loading")
   const [data, setData] = useState([])
+  const [term, setTerm] = useState(currentMonth)
+  const [items, setItems] = useState([])
   function refetch() {
     productsService.account(user).then(function (data) {
       setData(data)
-
-      console.log("data in account.jsx : ", data)
       setStat('success')
+    })
+    productsService.getFinanceByTerm(term).then(function (response) {
+      setItems(response)
+      if (response.status === true) {
+        console.log("set")
+        setStat('success')
+      } else if (response.status === false) {
+        navigate("/login");
+      }
+
     })
 
   }
@@ -60,8 +81,11 @@ const Account = () => {
     const expense_name = document.getElementById("name").value
     const expense_amount = document.getElementById("amount").value
     const expense_occurrence = "recurring"
-    let term = null
-    productsService.postExpense(expense_name, expense_amount, expense_occurrence, term).then(function () {
+    var newTerm = term
+    if (expense_occurrence === "recurring") {
+      newTerm = "recurring"
+    }
+    productsService.postExpense(expense_name, expense_amount, expense_occurrence, newTerm).then(function () {
       refetch()
     })
   }
@@ -70,8 +94,11 @@ const Account = () => {
     const income_name = document.getElementById("IncomeName").value
     const income_amount = document.getElementById("IncomeAmount").value
     const income_occurrence = "recurring"
-    let term = null
-    productsService.postIncome(income_name, income_amount, income_occurrence, term).then(function () {
+    var newTerm = term
+    if (income_occurrence === "recurring") {
+      newTerm = "recurring"
+    }
+    productsService.postIncome(income_name, income_amount, income_occurrence, newTerm).then(function () {
       refetch()
     })
   }
@@ -103,20 +130,36 @@ const Account = () => {
           </div>
           <div>
             <p className="text-[20px] text-white ubuntu">Recurring items:</p>
-            {console.log("data : ", data)}
-            {/* {data.items.map((item, index) => (
-              <div key={index} className="flex justify-between group">
-                <div className="flex items-center">
-                  <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
-                  {item.occurrence === 'recurring' && (
-                    <img src={item.direction === 'income' ? positive_recurring : negative_recurring} alt="recurring" className="w-[22px] h-[22px] ml-2" />
-                  )}
-                  <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={trash} alt="delete" className="h-[22px]" /></button>
-                  <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={edit} alt="edit" className="h-[22px]" /></button>
+            {Array.isArray(items?.data?.income) && items?.data?.income
+              .filter(item => item.occurrence === 'recurring')
+              .map((item, index) => (
+                <div key={index} className="flex justify-between group">
+                  <div className="flex items-center">
+                    <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
+                    {item.occurrence === 'recurring' && (
+                      <img src={item.direction === 'income' ? positive_recurring : negative_recurring} alt="recurring" className="w-[22px] h-[22px] ml-2" />
+                    )}
+                    <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={trash} alt="delete" className="h-[22px]" /></button>
+                    <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={edit} alt="edit" className="h-[22px]" /></button>
+                  </div>
+                  <h1 className={`mr-6 font-semibold text-[20px] font-semibold ubuntu ${item.direction === 'income' ? 'text-positive' : 'text-negative'}`}>{item.amount}</h1>
                 </div>
-                <h1 className={`mr-6 font-semibold text-[20px] font-semibold ubuntu ${item.direction === 'income' ? 'text-positive' : 'text-negative'}`}>{item.amount}</h1>
-              </div>
-            ))} */}
+              ))}
+            {Array.isArray(items?.data?.expenses) && items?.data?.expenses
+              .filter(item => item.occurrence === 'recurring')
+              .map((item, index) => (
+                <div key={index} className="flex justify-between group">
+                  <div className="flex items-center">
+                    <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
+                    {item.occurrence === 'recurring' && (
+                      <img src={item.direction === 'income' ? positive_recurring : negative_recurring} alt="recurring" className="w-[22px] h-[22px] ml-2" />
+                    )}
+                    <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={trash} alt="delete" className="h-[22px]" /></button>
+                    <button className="ml-2 group-hover:block hidden" onClick={remove.bind(this, item._id)}><img src={edit} alt="edit" className="h-[22px]" /></button>
+                  </div>
+                  <h1 className={`mr-6 font-semibold text-[20px] font-semibold ubuntu ${item.direction === 'income' ? 'text-positive' : 'text-negative'}`}>{item.amount}</h1>
+                </div>
+              ))}
           </div>
           <div className="flex justify-between">
             <button className="w-[40%] bg-positive text-white ubuntu rounded-[8px] h-[48px] sans" onClick={switchIncome}>Add Income</button>

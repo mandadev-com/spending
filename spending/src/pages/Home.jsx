@@ -125,16 +125,18 @@ const Home = () => {
             <div className="flex justify-between p-8">
               <div>
                 <h1 className={`text-positive ${styles.headText}`}>Income:</h1>
-                <h1 className={`text-positive ${styles.headText}`}>{data.total_income}</h1></div>
+                <h1 className={`text-positive ${styles.headText}`}>{data.data.total_income}</h1></div>
               <div>
                 <h1 className={`text-negative ${styles.headText}`}>Expenses:</h1>
-                <h1 className={`text-negative ${styles.headText}`}>{data.total_expenses}</h1></div>
+                <h1 className={`text-negative ${styles.headText}`}>{data.data.total_expenses}</h1></div>
             </div>
             <div>
+              {console.log("data.data.income : ", data.data.income)}
               {Array.isArray(data.data.income) && data.data.income.sort((a, b) => a.amount < b.amount ? 1 : -1).map((item, index) => (
                 <div key={index} className="flex justify-between group">
                   <div className="flex items-center">
                     <h1 className="text-[20px] text-white ubuntu">{item.name}:</h1>
+                    {console.log("item : ", item)}
                     {item.occurrence === 'recurring' && (
                       <img src={item.direction === 'income' ? positive_recurring : negative_recurring} alt="recurring" className="w-[22px] h-[22px] ml-2" />
                     )}
