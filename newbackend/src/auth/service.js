@@ -8,7 +8,6 @@ const {
 } = require("./dal");
 
 router.post("/login", async (req, res) => {
-  console.log("Login request received:", req.body);
   const email = req.body.email;
   const password = req.body.password;
   try {
@@ -24,12 +23,9 @@ router.post("/signup", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  console.log(`${req.method} request to ${req.url}`);
-  console.log("Request body:", req.body);
   try {
     const token = await createUser(email, password);
     res.json({ token: token });
-    console.log("Success creating user:", token);
   } catch (error) {
     console.error("Error creating user:", error.message);
     res.status(400).json({ error: error.message });
@@ -38,13 +34,10 @@ router.post("/signup", async (req, res) => {
 
 // Adjusted route to get account details
 router.get("/account", async (req, res) => {
-  console.log(`/api/auth/account`);
   const token = req.headers.authorization;
-  console.log(`token : `, token);
 
   try {
     const user_id = validateToken(token);
-    console.log(`user_id : `, user_id);
     const user = await getUserById(user_id); // Make sure you have this function defined to fetch user
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -55,8 +48,6 @@ router.get("/account", async (req, res) => {
       user_id: user._id,
       email: user.email,
     });
-
-    console.log("Success fetching user:", user);
   } catch (error) {
     console.error("Error fetching user:", error.message);
     res.status(500).json({ error: "Internal Server Error" });

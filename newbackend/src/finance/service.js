@@ -4,12 +4,9 @@ const { getRecurringItems, getTermItems } = require("./dal.js");
 const moment = require("moment");
 const { authorisedRoute } = require("../auth/dal.js");
 
-console.log("API routes mounted at /api/finance");
 router.get("/:term", authorisedRoute, async (req, res) => {
   let term = req.params.term;
   const user_id = req.user;
-
-  console.log("Finance - user_id : ", user_id);
 
   if (term === "current") {
     term = moment().format("YYYY-MM");

@@ -3,12 +3,10 @@ const router = express.Router();
 const { addIncome, getIncomes } = require("./dal.js");
 const { authorisedRoute } = require("../auth/dal.js");
 
-console.log("API routes mounted at /api/income");
 // Add an income (POST)
 router.post("/add", authorisedRoute, async (req, res) => {
   const { name, amount, term, occurrence } = req.body;
   const user_id = req.user;
-  console.log("Income - user_id : ", user_id);
 
   // Validate required fields
   if (!name || !amount || !term || !occurrence) {
