@@ -15,7 +15,6 @@ export class AuthService {
             }
         })
             .then(res => res.json());
-        console.log("creating token :", response);
 
         if (response.token) {
             localStorage.setItem(TOKEN_KEY, response.token);
@@ -26,8 +25,6 @@ export class AuthService {
     }
     async signup(email, password) {
         let data = JSON.stringify({ email: email, password: password })
-
-        console.log("Sending data:", data);
         const response = await fetch(`${API_URL}/api/auth/signup`, {
             method: "POST",
             body: data,

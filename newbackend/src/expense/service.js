@@ -4,11 +4,9 @@ const { addExpense, getExpenses } = require("./dal.js");
 const { authorisedRoute } = require("../auth/dal.js");
 
 // Add an expense (POST)
-console.log("API routes mounted at /api/expense");
 router.post("/add", authorisedRoute, async (req, res) => {
   const { name, amount, term, occurrence } = req.body;
   const user_id = req.user;
-  console.log("Expense - user_id : ", user_id);
 
   // Validate required fields
   if (!name || !amount || !term || !occurrence) {

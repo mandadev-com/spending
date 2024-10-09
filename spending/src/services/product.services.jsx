@@ -71,7 +71,6 @@ export class ProductsService {
             term = current
         }
         let data = JSON.stringify({ "name": name, 'amount': amount, "term": term, 'occurrence': occurrence })
-        console.log("Data for postIncome :", data)
         return await fetch(`${API_URL}/api/income/add`, {
             method: "POST",
             body: data,
