@@ -16,6 +16,8 @@ const token = authService.getUser()
 
 export class ProductsService {
     async getFinance(tk) {
+        const token = authService.getUser()
+
         const res = await fetch(`${API_URL}/api/finance/${current}`, {
             headers: {
                 "Content-Type": "application/json",
@@ -47,6 +49,8 @@ export class ProductsService {
         };
     }
     async postExpense(name, amount, occurrence, term) {
+        const token = authService.getUser()
+
         if (term === "current") {
             term = current
         }
@@ -61,6 +65,8 @@ export class ProductsService {
         }).then(res => res.json());
     }
     async postIncome(name, amount, occurrence, term) {
+        const token = authService.getUser()
+
         if (term === "current") {
             term = current
         }
@@ -76,6 +82,8 @@ export class ProductsService {
         }).then(res => res.json());
     }
     async remove(id) {
+        const token = authService.getUser()
+
         return await fetch(`${API_URL}/api/delete/${id}`, {
             method: "DELETE",
             headers: {
@@ -86,6 +94,8 @@ export class ProductsService {
 
     }
     async account(tk) {
+        const token = authService.getUser()
+
         return await fetch(`${API_URL}/api/auth/account`, {
             method: "GET",
             headers: {

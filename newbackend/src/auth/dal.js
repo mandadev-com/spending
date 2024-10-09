@@ -44,16 +44,31 @@ async function createUser(email, password) {
   return token;
 }
 
-function validateToken(token) {
-  if (!token) {
-    throw new Error("Authorization token is missing");
+async function authorisedRoute(req, res, next) {
+  try {
+    const user = await validateToken(req.headers["authorization"]);
+    req.user = user;
+    console.log("authorisedRoute user: ", user);
+    if (!req.headers["authorization"]) {
+      res.status(401).json({ error: "Authorization required" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    if (error.message === "Invalid Token") {
+      res.status(401).json({ error: "Invalid Authorization token" });
+    } else {
+      console.log(error);
+      res.status(500).json({ error: error });
+    }
   }
+}
 
+function validateToken(token) {
   try {
     const decoded = jwt.verify(token, secret_key);
     console.log("decoded : ", decoded);
 
-    // Check if user_id exists in the decoded token
     if (!decoded.user_id) {
       return new Error("Invalid token: user_id is missing");
     } else {
@@ -86,6 +101,7 @@ async function getUserById(userId) {
 module.exports = {
   authenticateUser,
   createUser,
+  authorisedRoute,
   validateToken,
   getUserById,
 };
