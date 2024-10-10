@@ -1,13 +1,15 @@
-FROM python
+FROM node:18.16.0-alpine3.17
 
-WORKDIR /app
+RUN mkdir -p /opt/app
 
-COPY BackEnd/requirements.txt .
+WORKDIR /opt/app/Backend
 
-RUN pip install -r requirements.txt
+COPY Backend/package*.json ./
 
-COPY . .
+RUN npm install
 
-EXPOSE 5000
+COPY . /opt/app
 
-CMD ["python", "BackEnd/main.py"]
+EXPOSE 4111
+
+CMD [ "node", "server.js"]
