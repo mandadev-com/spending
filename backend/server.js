@@ -31,7 +31,7 @@ app.use("/api/income", incomeRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/delete", deleteRoutes);
 
-app.get("/old/", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
 });
 
